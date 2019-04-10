@@ -1,0 +1,6 @@
+#!ruby
+
+require "bundler/setup"
+require "fastlyctl"
+
+FastlyCTL::CLI.start(ARGV)
