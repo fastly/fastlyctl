@@ -19,17 +19,19 @@ module FastlyCTL
       path += "/#{obj_name}" unless obj_type == "settings"
       obj = FastlyCTL::Fetcher.api_request(:get, path)
 
+      encoded_name = URI.escape(obj_name)
+
       if (obj_type == "settings")
         puts "Copying settings from #{id} version #{source_version} to #{target_id} version #{target_version}..."
       else
-        existing_obj = FastlyCTL::Fetcher.api_request(:get, "/service/#{target_id}/version/#{target_version}/#{obj_type}/#{obj_name}",{
+        existing_obj = FastlyCTL::Fetcher.api_request(:get, "/service/#{target_id}/version/#{target_version}/#{obj_type}/#{encoded_name}",{
           expected_responses: [200,404]
         })
 
         if existing_obj.key?("name")
           abort unless yes?("A #{FastlyCTL::CloneUtils.unpluralize(obj_type)} named #{obj_name} already exists on #{target_id} version #{target_version}. Delete it and proceed?")
 
-          FastlyCTL::Fetcher.api_request(:delete,"/service/#{target_id}/version/#{target_version}/#{obj_type}/#{obj_name}")
+          FastlyCTL::Fetcher.api_request(:delete,"/service/#{target_id}/version/#{target_version}/#{obj_type}/#{encoded_name}")
         end
 
         puts "Copying #{FastlyCTL::CloneUtils.unpluralize(obj_type)} #{obj_name} from #{id} version #{source_version} to #{target_id} version #{target_version}..."

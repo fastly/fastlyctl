@@ -19,6 +19,8 @@ module FastlyCTL
       version = FastlyCTL::Fetcher.get_writable_version(id) unless options[:version]
       version ||= options[:version]
 
+      encoded_name = URI.escape(name) if name
+
       case action
       when "create"
         abort "Must specify name for ACL" unless name
@@ -27,7 +29,7 @@ module FastlyCTL
         say("ACL #{name} created.")
       when "delete"
         abort "Must specify name for ACL" unless name
-        FastlyCTL::Fetcher.api_request(:delete, "/service/#{id}/version/#{version}/acl/#{name}")
+        FastlyCTL::Fetcher.api_request(:delete, "/service/#{id}/version/#{version}/acl/#{encoded_name}")
 
         say("ACL #{name} deleted.")
       when "list"
@@ -41,14 +43,14 @@ module FastlyCTL
       when "add"
         abort "Must specify name for ACL" unless name
         abort "Must specify IP" unless ip
-        acl = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/acl/#{name}")
+        acl = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/acl/#{encoded_name}")
         FastlyCTL::Fetcher.api_request(:post, "/service/#{id}/acl/#{acl["id"]}/entry", params: { ip: ip, negated: options.key?(:negate) ? "1" : "0" })   
 
         say("#{ip} added to ACL #{name}.")   
       when "remove"
         abort "Must specify name for ACL" unless name
         abort "Must specify IP for ACL entry" unless ip
-        acl = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/acl/#{name}")
+        acl = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/acl/#{encoded_name}")
         entries = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/acl/#{acl["id"]}/entries")
 
         entry = false
@@ -66,7 +68,7 @@ module FastlyCTL
         say("IP #{ip} removed from ACL #{name}.")
       when "list_ips"
         abort "Must specify name for ACL" unless name
-        acl = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/acl/#{name}")
+        acl = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/acl/#{encoded_name}")
         entries = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/acl/#{acl["id"]}/entries")
 
         say("No items in ACL.") unless entries.length > 0
@@ -76,7 +78,7 @@ module FastlyCTL
       when "bulk_add"
         abort "Must specify name for ACL" unless name
         abort "Must specify JSON blob of operations in ip field. Documentation on this can be found here: https://docs.fastly.com/api/config#acl_entry_c352ca5aee49b7898535cce488e3ba82" unless ip
-        acl = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/acl/#{name}")
+        acl = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/acl/#{encoded_name}")
         FastlyCTL::Fetcher.api_request(:patch, "/service/#{id}/acl/#{acl["id"]}/items", {body: ip, headers: {"Content-Type" => "application/json"}})
 
         say("Bulk add operation completed successfully.")

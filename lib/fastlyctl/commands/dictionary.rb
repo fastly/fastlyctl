@@ -18,6 +18,8 @@ module FastlyCTL
       version = FastlyCTL::Fetcher.get_writable_version(id) unless options[:version]
       version ||= options[:version]
 
+      encoded_name = URI.escape(name) if name
+
       case action
       when "create"
         abort "Must specify name for dictionary" unless name
@@ -26,7 +28,7 @@ module FastlyCTL
         say("Dictionary #{name} created.")
       when "delete"
         abort "Must specify name for dictionary" unless name
-        FastlyCTL::Fetcher.api_request(:delete, "/service/#{id}/version/#{version}/dictionary/#{name}")
+        FastlyCTL::Fetcher.api_request(:delete, "/service/#{id}/version/#{version}/dictionary/#{encoded_name}")
 
         say("Dictionary #{name} deleted.")
       when "list"
@@ -40,20 +42,20 @@ module FastlyCTL
       when "upsert"
         abort "Must specify name for dictionary" unless name
         abort "Must specify key and value for dictionary item" unless (key && value)
-        dict = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/dictionary/#{name}")
+        dict = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/dictionary/#{encoded_name}")
         FastlyCTL::Fetcher.api_request(:put, "/service/#{id}/dictionary/#{dict["id"]}/item/#{key}", params: { item_value: value })   
 
         say("Dictionary item #{key} set to #{value}.")   
       when "remove"
         abort "Must specify name for dictionary" unless name
         abort "Must specify key for dictionary item" unless key
-        dict = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/dictionary/#{name}")
+        dict = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/dictionary/#{encoded_name}")
         FastlyCTL::Fetcher.api_request(:delete, "/service/#{id}/dictionary/#{dict["id"]}/item/#{key}")
 
         say("Item #{key} removed from dictionary #{name}.")
       when "list_items"
         abort "Must specify name for dictionary" unless name
-        dict = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/dictionary/#{name}")
+        dict = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/dictionary/#{encoded_name}")
         resp = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/dictionary/#{dict["id"]}/items")
 
         say("No items in dictionary.") unless resp.length > 0
@@ -63,7 +65,7 @@ module FastlyCTL
       when "bulk_add"
         abort "Must specify name for dictionary" unless name
         abort "Must specify JSON blob of operations in key field. Documentation on this can be found here: https://docs.fastly.com/api/config#dictionary_item_dc826ce1255a7c42bc48eb204eed8f7f" unless key
-        dict = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/dictionary/#{name}")
+        dict = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/dictionary/#{encoded_name}")
         FastlyCTL::Fetcher.api_request(:patch, "/service/#{id}/dictionary/#{dict["id"]}/items", {body: key, headers: {"Content-Type" => "application/json"}})
 
         say("Bulk add operation completed successfully.")

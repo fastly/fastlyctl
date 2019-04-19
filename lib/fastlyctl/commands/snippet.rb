@@ -14,6 +14,8 @@ module FastlyCTL
       version = FastlyCTL::Fetcher.get_writable_version(id) unless options[:version]
       version ||= options[:version].to_i
 
+      encoded_name = URI.escape(name) if name
+
       filename = "#{name}.snippet"
 
       case action
@@ -82,7 +84,7 @@ module FastlyCTL
       when "delete"
         abort "Must supply a snippet name as second parameter" unless name
 
-        FastlyCTL::Fetcher.api_request(:delete,"/service/#{id}/version/#{version}/snippet/#{name}")
+        FastlyCTL::Fetcher.api_request(:delete,"/service/#{id}/version/#{version}/snippet/#{encoded_name}")
         say("#{name} deleted on #{id} version #{version}")
 
         return unless File.exists?(filename)
