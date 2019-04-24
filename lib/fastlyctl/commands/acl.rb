@@ -1,11 +1,12 @@
 module FastlyCTL
   class CLI < Thor
-    desc "acl ACTION ACL_NAME IP_OR_SUBNET", "Manipulate ACLS.\n  Actions:\n    create: Create an ACL\n
+    desc "acl ACTION ACL_NAME IP", "Manipulate ACLS.\n  Actions:\n    create: Create an ACL\n
     delete: Delete an ACL\n
     list: Provide a list of ACLs on this service\n
     add: Add an IP/subnet to an ACL\n
     remove: Remove an IP/subnet from an ACL\n
     list_ips: List all IPs/subnets in the ACL\n
+    sync: Synchronizes an ACL with a comma separated list of IPs. Will create or delete ACL entries as needed.
     bulk_add: Perform operations on the ACL in bulk. A list of operations in JSON format should be specified in the ip field. Documentation on this format can be found here: https://docs.fastly.com/api/config#acl_entry_c352ca5aee49b7898535cce488e3ba82"
     method_option :service, :aliases => ["--s"]
     method_option :version, :aliases => ["--v"]
@@ -43,10 +44,24 @@ module FastlyCTL
       when "add"
         abort "Must specify name for ACL" unless name
         abort "Must specify IP" unless ip
-        acl = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/acl/#{encoded_name}")
-        FastlyCTL::Fetcher.api_request(:post, "/service/#{id}/acl/#{acl["id"]}/entry", params: { ip: ip, negated: options.key?(:negate) ? "1" : "0" })   
 
-        say("#{ip} added to ACL #{name}.")   
+        subnet = false
+        if ip.include?("/")
+          ip = ip.sub(/\/(\d{1,2})/,"")
+          subnet = $1
+        end
+
+        acl = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/acl/#{encoded_name}")
+
+        params = {
+          ip: ip,
+          negated: options.key?(:negate) ? "1" : "0"
+        }
+        params[:subnet] = subnet if subnet
+
+        FastlyCTL::Fetcher.api_request(:post, "/service/#{id}/acl/#{acl["id"]}/entry", params: params)   
+
+        say("#{ip} added to ACL #{name}.")    
       when "remove"
         abort "Must specify name for ACL" unless name
         abort "Must specify IP for ACL entry" unless ip
@@ -73,13 +88,66 @@ module FastlyCTL
 
         say("No items in ACL.") unless entries.length > 0
         entries.each do |i|
-          puts "#{i["ip"]} - Negated: #{i["negated"] == "0" ? "false" : "true"}"
+          puts "#{i["ip"]}#{i["subnet"].nil? ? "" : "/"+i["subnet"].to_s} - Negated: #{i["negated"] == "0" ? "false" : "true"}"
         end
+      when "sync"
+        abort "Must specify name for ACL" unless name
+        abort "Must supply comma separated list of IPs as the \"ip\" parameter" unless ip
+
+        ips = ip.split(',').to_set.to_a
+        entry_ids = Hash.new
+        current_ips = []
+
+        acl = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/acl/#{encoded_name}")
+        entries = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/acl/#{acl["id"]}/entries")
+        entries.each do |entry|
+          ip_with_subnet = entry["ip"]
+          ip_with_subnet += "/" + entry["subnet"].to_s if (entry.key?("subnet") && !entry["subnet"].nil?)
+
+          entry_ids[ip_with_subnet] = entry["id"]
+          current_ips.push(ip_with_subnet)
+        end
+
+        to_add = ips - current_ips
+        to_remove = current_ips - ips
+
+        bulk = []
+
+        to_add.each do |add|
+          subnet = false
+          if add.include?("/")
+            add = add.sub(/\/(\d{1,2})/,"")
+            subnet = $1
+          end
+
+          params = {
+            "op" => "create",
+            "ip" => add
+          }
+          params["subnet"] = subnet if subnet
+
+          bulk.push(params)
+        end
+
+        to_remove.each do |remove|
+          entry_id = entry_ids[remove]
+          remove = remove.sub(/\/(\d{1,2})/,"") if remove.include?("/")
+
+          bulk.push({
+            "op" => "delete",
+            "id" => entry_id
+          })
+        end
+
+        FastlyCTL::Fetcher.api_request(:patch, "/service/#{id}/acl/#{acl["id"]}/entries", {body: {entries: bulk}.to_json, headers: {"Content-Type" => "application/json"}})
+
+        say("Sync operation completed successfully with #{bulk.length} operations.")
+
       when "bulk_add"
         abort "Must specify name for ACL" unless name
         abort "Must specify JSON blob of operations in ip field. Documentation on this can be found here: https://docs.fastly.com/api/config#acl_entry_c352ca5aee49b7898535cce488e3ba82" unless ip
         acl = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/acl/#{encoded_name}")
-        FastlyCTL::Fetcher.api_request(:patch, "/service/#{id}/acl/#{acl["id"]}/items", {body: ip, headers: {"Content-Type" => "application/json"}})
+        FastlyCTL::Fetcher.api_request(:patch, "/service/#{id}/acl/#{acl["id"]}/entries", {body: ip, headers: {"Content-Type" => "application/json"}})
 
         say("Bulk add operation completed successfully.")
       else

@@ -47,16 +47,17 @@ Manipulate ACLs on a service.
 Usage:
 
 ```
-fastlyctl acl [action] [acl_name] [ip_or_subnet]
+fastlyctl acl [action] [acl_name] [ip]
 ```
 
 Available Actions:
-  * create: Creates a new ACL. `ip_or_subnet` parameter is omitted.
-  * delete: Deletes an ACL. `ip_or_subnet` parameter is omitted.
-  * list: Lists all ACLs. `ip_or_subnet` parameter is omitted.
+  * create: Creates a new ACL. `ip` parameter is omitted.
+  * delete: Deletes an ACL. `ip` parameter is omitted.
+  * list: Lists all ACLs. `ip` parameter is omitted.
   * add: Adds a new IP or Subnet to an ACL.
   * remove: Removes an IP or Subnet from an ACL.
   * list_ips: Lists all IPs/Subnets in an ACL.
+  * sync: Synchronizes an ACL with a comma separated list of IPs. Will create or delete ACL entries as needed.
   * bulk_add: Adds multiple items to an ACL. See [this documentation](https://docs.fastly.com/api/config#acl_entry_c352ca5aee49b7898535cce488e3ba82) for information on the format.
 
 Flags:
