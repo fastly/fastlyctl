@@ -1,4 +1,4 @@
-# FastlyCTL
+# FastlyCTL [![Gem Version](https://img.shields.io/gem/v/fastlyctl.svg)](https://rubygems.org/gems/fastlyctl)
 
 CLI for manipulating objects with [Fastly's API](https://docs.fastly.com/api/config).
 
