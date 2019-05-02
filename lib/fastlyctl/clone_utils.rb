@@ -44,10 +44,10 @@ module FastlyCTL
       source_sid = obj["service_id"]
       abort "No version on object" unless obj.key?("version")
       source_version = obj["version"]
+      main = false
 
-      if type == "director"
-        backends = obj["backends"].dup
-      end
+      backends = obj["backends"].dup if type == "director"
+      main = true if type == "vcl" && obj["main"] === true
 
       if type == "snippet" && obj["dynamic"] == "1"
         obj.merge!(FastlyCTL::Fetcher.api_request(:get, "/service/#{source_sid}/snippet/#{obj["id"]}"))
@@ -57,6 +57,11 @@ module FastlyCTL
       obj = FastlyCTL::CloneUtils.filter(type,obj)
 
       obj = FastlyCTL::Fetcher.api_request(meta.key?(:method) ? meta[:method] : :post, "/service/#{sid}/version/#{version}/#{type}", body: obj )
+
+      if main === true
+        # the "main-ness" of the vcl does not get carried over during creation. must explicitly set main
+        FastlyCTL::Fetcher.api_request(:put, "/service/#{sid}/version/#{version}/vcl/#{obj["name"]}/main")
+      end
 
       if type == "director"
         backends.each do |b|
@@ -72,6 +77,7 @@ module FastlyCTL
 
       items = []
       entries = []
+      # build some batch requests for dictionaries and ACLs to save on API rate limit
       FastlyCTL::Fetcher.api_request(:get, "#{path}/#{type}/#{obj_id}/#{FastlyCTL::CloneUtils.pluralize(child)}").each do |child_obj|
         case child
         when "item"
@@ -81,7 +87,7 @@ module FastlyCTL
           next
         when "entry"
           entries.push({
-            "op" => "create","ip" => child_obj["ip"],"subnet" => child_obj["subnet"]
+            "op" => "create","ip" => child_obj["ip"],"subnet" => child_obj["subnet"], "negate" => child_obj["negate"]
           })
           next
         end
