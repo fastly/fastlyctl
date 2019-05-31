@@ -10,6 +10,7 @@ module FastlyCTL
     bulk_add: Perform operations on the dictionary in bulk. A list of operations in JSON format should be specified in the key field. Documentation on this format can be found here: https://docs.fastly.com/api/config#dictionary_item_dc826ce1255a7c42bc48eb204eed8f7f"
     method_option :service, :aliases => ["--s"]
     method_option :version, :aliases => ["--v"]
+    method_option :write_only, :aliases => ["--wo"]
     def dictionary(action, name=false, key=false, value=false)
       id = FastlyCTL::Utils.parse_directory unless options[:service]
       id ||= options[:service]
@@ -24,7 +25,11 @@ module FastlyCTL
       case action
       when "create"
         abort "Must specify name for dictionary" unless name
-        FastlyCTL::Fetcher.api_request(:post, "/service/#{id}/version/#{version}/dictionary", params: { name: name })
+
+        params = { name: name }
+        params[:write_only] = true if options.key?(:write_only)
+
+        FastlyCTL::Fetcher.api_request(:post, "/service/#{id}/version/#{version}/dictionary", params: params)
 
         say("Dictionary #{name} created.")
       when "delete"

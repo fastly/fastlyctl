@@ -143,6 +143,7 @@ Available Actions:
 Flags:
   * --s: The service ID to use. Current working directory is assumed.
   * --v: The version to use. Latest writable version is assumed.
+  * --wo: When used with `create`, flags the dictionary as write-only.
 
 ### diff
 
