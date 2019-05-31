@@ -69,6 +69,11 @@ module FastlyCTL
         end
       end
 
+      if type == "dictionary" && obj["write_only"] === true
+        puts "Unable to clone the contents of a write only dictionary. Creating empty dictionary instead..."
+        return obj
+      end
+
       return obj unless meta.key?(:child)
       new_obj_id = obj["id"] 
       child = meta[:child]
