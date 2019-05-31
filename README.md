@@ -137,6 +137,7 @@ Available Actions:
   * upsert: Inserts a new item into a dictionary. If the item exists, its value will be updated.
   * remove: Removes an item from a dictionary.
   * list_items: Lists all items in a dictionary.
+  * sync: Synchronizes a dictionary with a comma separated list of key/value pairs. Will create, delete, or update keys as needed. Separate keys and values with `=` or `:`.
   * bulk_add: Adds multiple items to a dictionary. See [this documentation](https://docs.fastly.com/api/config#dictionary_item_dc826ce1255a7c42bc48eb204eed8f7f) for information on the format.
 
 Flags:

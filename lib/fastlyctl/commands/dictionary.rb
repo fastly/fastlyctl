@@ -6,6 +6,7 @@ module FastlyCTL
     upsert: Update a key in a dictionary if it exists. Add the key if it does not.\n
     remove: Remove a key from a dictionary\n
     list_items: List all keys in the dictionary\n
+    sync: Synchronizes a dictionary with a comma separated list of key/value pairs. Will create, delete, or update keys as needed. Separate keys and values with = or :.\n
     bulk_add: Perform operations on the dictionary in bulk. A list of operations in JSON format should be specified in the key field. Documentation on this format can be found here: https://docs.fastly.com/api/config#dictionary_item_dc826ce1255a7c42bc48eb204eed8f7f"
     method_option :service, :aliases => ["--s"]
     method_option :version, :aliases => ["--v"]
@@ -62,6 +63,54 @@ module FastlyCTL
         resp.each do |i|
           puts "#{i["item_key"]} : #{i["item_value"]}"
         end
+      when "sync"
+        abort "Must specify name for dictionary" unless name
+        abort "Must supply comma separated list of keys and values as the \"key\" parameter. " unless key
+
+        pairs = {}
+        key.split(',').to_set.to_a.each do |kv|
+          kv = kv.split("=") if kv.include?("=")
+          kv = kv.split(":") if kv.include?(":")
+          abort "Keys and values must be separated by an = or : symbol. Found \"#{kv}\"" unless kv.is_a?(Array)
+          pairs[kv[0]] = kv[1]
+        end
+        item_ids = Hash.new
+        bulk = []
+
+        dictionary = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/dictionary/#{encoded_name}")
+        items = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/dictionary/#{dictionary["id"]}/items")
+        items.each do |item|
+          unless pairs.key?(item["item_key"])
+            bulk.push({
+              "op" => "delete",
+              "item_key" => item["item_key"]
+            })
+            next
+          end
+
+          if (pairs[item["item_key"]] != item["item_value"])
+            bulk.push({
+              "op": "upsert",
+              "item_key": item["item_key"],
+              "item_value": item["item_value"]
+            })
+          end
+
+          pairs.delete(item["item_key"])
+        end
+
+        pairs.each do |k,v|
+          bulk.push({
+            "op": "create",
+            "item_key": k,
+            "item_value": v
+          })
+        end
+
+        FastlyCTL::Fetcher.api_request(:patch, "/service/#{id}/dictionary/#{dictionary["id"]}/items", {body: {items: bulk}.to_json, headers: {"Content-Type" => "application/json"}})
+
+        say("Sync operation completed successfully with #{bulk.length} operations.")
+
       when "bulk_add"
         abort "Must specify name for dictionary" unless name
         abort "Must specify JSON blob of operations in key field. Documentation on this can be found here: https://docs.fastly.com/api/config#dictionary_item_dc826ce1255a7c42bc48eb204eed8f7f" unless key
