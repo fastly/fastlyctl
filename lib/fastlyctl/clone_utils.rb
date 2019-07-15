@@ -60,12 +60,12 @@ module FastlyCTL
 
       if main === true
         # the "main-ness" of the vcl does not get carried over during creation. must explicitly set main
-        FastlyCTL::Fetcher.api_request(:put, "/service/#{sid}/version/#{version}/vcl/#{obj["name"]}/main")
+        FastlyCTL::Fetcher.api_request(:put, "/service/#{sid}/version/#{version}/vcl/#{URI.escape(obj["name"])}/main")
       end
 
       if type == "director"
         backends.each do |b|
-          FastlyCTL::Fetcher.api_request(:post, "/service/#{sid}/version/#{version}/director/#{obj["name"]}/backend/#{b}", body: obj )
+          FastlyCTL::Fetcher.api_request(:post, "/service/#{sid}/version/#{version}/director/#{URI.escape(obj["name"])}/backend/#{b}", body: obj )
         end
       end
 
