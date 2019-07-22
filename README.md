@@ -117,9 +117,6 @@ Usage:
 fastlyctl create_service [name]
 ```
 
-Flags:
-  * --c: [Admin only] The customer ID to create the service on.
-
 ### dictionary
 
 Manipulate edge dictionaries on a service.
