@@ -42,6 +42,16 @@ module FastlyCTL
       def s3(action)
         puts "S3: #{action}"
       end
+
+      desc "status", "Check the last output of the logging status"
+      method_option :service, :aliases => ["--s","--service"], :banner => "Service ID to use", :required => true 
+
+      def status
+        id = options[:service]
+        resp = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/logging_status")      
+        say(JSON.pretty_generate(resp))
+      end
+
     end
 
     class CLI < Thor
