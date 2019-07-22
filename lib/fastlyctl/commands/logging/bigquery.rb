@@ -109,6 +109,14 @@ module BigQuery
     end
 
     def self.show(options)
+        required_opts = ["name"]
+        ensure_opts(required_opts,options)
+        id  = options[:service]
+        version = FastlyCTL::Fetcher.get_writable_version(id) unless options[:version]
+        version ||= options[:version]
+
+        resp = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/logging/bigquery/#{options[:name]}")
+        puts JSON.pretty_generate(resp)
     end
 
     def self.delete(options)

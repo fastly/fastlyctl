@@ -28,6 +28,8 @@ module FastlyCTL
           BigQuery.list(options)
         when "update"
           BigQuery.update(options)
+        when "show"
+          BigQuery.show(options)
         else
           abort "Sorry, invalid action #{action} supplied, only create, update, delete and show are valid."
         end
