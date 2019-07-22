@@ -36,14 +36,15 @@ module FastlyCTL
 
       end
 
-      desc "s3 <action>", "Setup S3  as a logging provider"
-      method_option :format, :required => true
-      method_option :keyfile, :required => true
-      method_option :email , :required => true
+      # Placeholder for future S3 work 
+      # desc "s3 <action>", "Setup S3  as a logging provider"
+      # method_option :format, :required => true
+      # method_option :keyfile, :required => true
+      # method_option :email , :required => true
 
-      def s3(action)
-        puts "S3: #{action}"
-      end
+      # def s3(action)
+      #   puts "S3: #{action}"
+      # end
 
       desc "status", "Check the last output of the logging status"
       method_option :service, :aliases => ["--s","--service"], :banner => "Service ID to use", :required => true 
