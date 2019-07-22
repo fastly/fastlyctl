@@ -57,7 +57,7 @@ module FastlyCTL
     end
 
     class CLI < Thor
-      desc "logging SUBCOMMAND ...ARGS", "Setup BigQuery as a logging provider"
+      desc "logging SUBCOMMAND ...ARGS", "Interface with Fastly Logging"
       subcommand "logging", LoggingSubCmd
     end
 
