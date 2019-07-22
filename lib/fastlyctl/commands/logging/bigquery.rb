@@ -31,7 +31,6 @@ module BigQuery
            }
         }
         
-
         puts
         puts "Name".ljust(max["name"]) + " | " + "Dataset".ljust(max["dataset"]) + " | " + "Table".ljust(max["table"]) + " | " + "ProjectId".ljust(max["project_id"])
         puts "-" * (max["name"] + max["dataset"] + max["table"] + max["project_id"])
