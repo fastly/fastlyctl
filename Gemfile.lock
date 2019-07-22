@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    fastlyctl (1.0.6)
+    fastlyctl (1.0.7)
       bundler (~> 1.10)
       diffy (~> 3.2.1)
       launchy (~> 2.4.3, >= 2.4.3)
@@ -31,4 +31,4 @@ DEPENDENCIES
   fastlyctl!
 
 BUNDLED WITH
-   1.17.2
+   1.17.3
