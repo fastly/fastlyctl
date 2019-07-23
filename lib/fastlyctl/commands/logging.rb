@@ -6,19 +6,19 @@ module FastlyCTL
 
       desc "bigquery <action>", "Setup BigQuery As a logging provider, available actions are create, update, delete, list and show"
       method_option :service, :aliases => ["-s","--service"], :banner => "Service ID to use", :required => true 
-      method_option :version, :banner => "Version of the service to use"
-      method_option :name, :aliases => ["--n"], :banner => "Current name of the logging configuration"
-      method_option :new_name, :banner => "Used for the update method to rename a configuration"
-      method_option :format_file,  :banner => "File containing the JSON Representation of the logline, must match BigQuery schema"
-      method_option :format_version , :banner => "Version of customer format, either 1 or 2, defaults to 2"
-      method_option :user, :banner => "Google Cloud Service Account Email"
-      method_option :secret_key_file, :banner => "Google Cloud Account secret key"
-      method_option :project_id, :banner => "Google Cloud Project ID"
-      method_option :dataset, :banner => "BigQuery Dataset"
-      method_option :table , :banner => "BigQuery Table"
-      method_option :template_suffix, :banner => "Optional table name suffix"
-      method_option :placement, :banner => "Placement of the logging  call, can be none or waf_debug.  Not required and no default"
-      method_option :response_condition, :banner => "When to execute, if empty it is always"
+      method_option :version, :aliases = ["--v", "--version"], :banner => "Version of the service to use"
+      method_option :name, :aliases => ["--n", "--name"], :banner => "Current name of the logging configuration"
+      method_option :new_name, :aliases => ["--nn","--new-name"]:banner => "Used for the update method to rename a configuration"
+      method_option :format_file,  :aliases => ["--ff","--format-file"], :banner => "File containing the JSON Representation of the logline, must match BigQuery schema"
+      method_option :format_version, :aliases => ["--fv","--format-version"], :banner => "Version of customer format, either 1 or 2, defaults to 2"
+      method_option :user, :aliases => ["--u","--user"], :banner => "Google Cloud Service Account Email"
+      method_option :secret_key_file, :aliases => ["--scf", "--secret-key-file"],:banner => "Google Cloud Account secret key"
+      method_option :project_id, :aliases => ["--p","--project-id"], :banner => "Google Cloud Project ID"
+      method_option :dataset, :aliases => ["--d","--dataset"], :banner => "BigQuery Dataset"
+      method_option :table, :aliases => ["--t","--table"], :banner => "BigQuery Table"
+      method_option :template_suffix, :aliases => ["--ts","--template-suffix"], :banner => "Optional table name suffix"
+      method_option :placement, :aliases => ["--pl","--placement"], :banner => "Placement of the logging  call, can be none or waf_debug.  Not required and no default"
+      method_option :response_condition, :aliases => ["--r","--response-condition"], :banner => "When to execute, if empty it is always"
 
       def bigquery(action)
         case action 

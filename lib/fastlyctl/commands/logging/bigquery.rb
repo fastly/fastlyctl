@@ -11,7 +11,7 @@ module BigQuery
 
     def BigQuery.ensure_opts(required_opts,options) 
         required_opts.each { |k| 
-            if options[k].nil? 
+            if options.key?(k)
                 abort "Error, option #{k.to_s} is required for this action"
             end
         }
@@ -65,7 +65,7 @@ module BigQuery
         params[:dataset] = options[:dataset]
         params[:table] = options[:table]
 
-        FastlyCTL::Fetcher.api_request(:post, "/service/#{id}/version/#{version}/logging/bigquery", params: params)
+        FastlyCTL::Fetcher.api_request(:post, "/service/#{id}/version/#{version}/logging/bigquery", body: params)
         puts "BigQuery logging provider created in service id #{id} on version #{version}"
     end
 
@@ -92,15 +92,15 @@ module BigQuery
         params[:dataset] = options[:dataset] unless options[:dataset].nil?
         params[:table] = options[:table] unless options[:table].nil?
 
-        puts "Params #{params}"
-        FastlyCTL::Fetcher.api_request(:put, "/service/#{id}/version/#{version}/logging/bigquery/#{options[:name]}", params: params)
+        FastlyCTL::Fetcher.api_request(:put, "/service/#{id}/version/#{version}/logging/bigquery/#{options[:name]}", body: params)
         puts "BigQuery logging provider update in service id #{id} on version #{version}"
     end
 
     def self.list(options)
         id = options[:service]
         version = FastlyCTL::Fetcher.get_writable_version(id) unless options[:version]
-
+        version ||= options[:version]
+        
         puts "Listing all BigQuery configurations for service #{id} version #{version}"
 
         configs = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/logging/bigquery")
