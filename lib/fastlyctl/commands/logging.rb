@@ -12,7 +12,7 @@ module FastlyCTL
       method_option :format_file,  :aliases => ["--ff","--format-file"], :banner => "File containing the JSON Representation of the logline, must match BigQuery schema"
       method_option :format_version, :aliases => ["--fv","--format-version"], :banner => "Version of customer format, either 1 or 2, defaults to 2"
       method_option :user, :aliases => ["--u","--user"], :banner => "Google Cloud Service Account Email"
-      method_option :secret_key_file, :aliases => ["--scf", "--secret-key-file"],:banner => "Google Cloud Account secret key"
+      method_option :secret_key_file, :aliases => ["--scf", "--secret-key-file"],:banner => "File that contains the Google Cloud Account secret key"
       method_option :project_id, :aliases => ["--p","--project-id"], :banner => "Google Cloud Project ID"
       method_option :dataset, :aliases => ["--d","--dataset"], :banner => "BigQuery Dataset"
       method_option :table, :aliases => ["--t","--table"], :banner => "BigQuery Table"
@@ -30,6 +30,8 @@ module FastlyCTL
           BigQuery.update(options)
         when "show"
           BigQuery.show(options)
+        when "delete"
+          BigQuery.delete(options)  
         else
           abort "Sorry, invalid action #{action} supplied, only create, update, delete and show are valid."
         end

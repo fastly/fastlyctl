@@ -11,7 +11,7 @@ module BigQuery
 
     def BigQuery.ensure_opts(required_opts,options) 
         required_opts.each { |k| 
-            if options.key?(k)
+            if !options.key?(k)
                 abort "Error, option #{k.to_s} is required for this action"
             end
         }
@@ -100,7 +100,7 @@ module BigQuery
         id = options[:service]
         version = FastlyCTL::Fetcher.get_writable_version(id) unless options[:version]
         version ||= options[:version]
-        
+
         puts "Listing all BigQuery configurations for service #{id} version #{version}"
 
         configs = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/logging/bigquery")
@@ -119,6 +119,15 @@ module BigQuery
     end
 
     def self.delete(options)
+        required_opts = ["version","name"]
+        ensure_opts(required_opts,options)
+
+        id  = options[:service]
+        version = FastlyCTL::Fetcher.get_writable_version(id) unless options[:version]
+        version ||= options[:version]
+
+        resp = FastlyCTL::Fetcher.api_request(:delete, "/service/#{id}/version/#{version}/logging/bigquery/#{options[:name]}")
+        puts JSON.pretty_generate(resp)
     end
 
 end
