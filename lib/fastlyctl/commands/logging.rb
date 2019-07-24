@@ -6,9 +6,9 @@ module FastlyCTL
 
       desc "bigquery <action>", "Setup BigQuery As a logging provider, available actions are create, update, delete, list and show"
       method_option :service, :aliases => ["-s","--service"], :banner => "Service ID to use", :required => true 
-      method_option :version, :aliases = ["--v", "--version"], :banner => "Version of the service to use"
+      method_option :version, :aliases => ["--v", "--version"], :banner => "Version of the service to use"
       method_option :name, :aliases => ["--n", "--name"], :banner => "Current name of the logging configuration"
-      method_option :new_name, :aliases => ["--nn","--new-name"]:banner => "Used for the update method to rename a configuration"
+      method_option :new_name, :aliases => ["--nn","--new-name"], :banner => "Used for the update method to rename a configuration"
       method_option :format_file,  :aliases => ["--ff","--format-file"], :banner => "File containing the JSON Representation of the logline, must match BigQuery schema"
       method_option :format_version, :aliases => ["--fv","--format-version"], :banner => "Version of customer format, either 1 or 2, defaults to 2"
       method_option :user, :aliases => ["--u","--user"], :banner => "Google Cloud Service Account Email"

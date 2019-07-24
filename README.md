@@ -199,6 +199,29 @@ Flags:
   * --s: The service ID to download. Current working directory is assumed.
   * --v: The version to download. The currently active version is assumed.
 
+### logging 
+
+Manage the realtime logging configuration for a service, as well as checking on the status of the logging endpoints.  
+
+Usage:
+
+```
+fastlyctl logging PROVIDER ACTION
+```
+
+The currently supported providers are `bigquery` (more coming soon) and the actions supported are `create`, `update`, `list`, `show`, `delete`.  For a full list of the options required type the command:
+
+```
+fastlyctl logging PROVIDER --help
+```
+
+For example, `fastly logging bigquery --help`
+
+For status you can use:
+```
+fastlyctl logging status
+```
+
 ### login
 
 Login to the Fastly app and create an API token. This token will be stored in your home directory for the CLI to use for all requests.
