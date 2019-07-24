@@ -201,26 +201,51 @@ Flags:
 
 ### logging 
 
-Manage the realtime logging configuration for a service, as well as checking on the status of the logging endpoints.  
+Manage the realtime logging configuration for a service, as well as checking on the status of the logging endpoints.  Logging requires a subcommand of either `status` or the name of a logging provider listed below.
 
+##### status
 Usage:
 
 ```
-fastlyctl logging PROVIDER ACTION
-```
-
-The currently supported providers are `bigquery` (more coming soon) and the actions supported are `create`, `update`, `list`, `show`, `delete`.  For a full list of the options required type the command:
-
-```
-fastlyctl logging PROVIDER --help
-```
-
-For example, `fastly logging bigquery --help`
-
-For status you can use:
-```
 fastlyctl logging status
 ```
+
+Flags:
+
+  * `--s / --service`  Service ID to use
+
+##### BigQuery
+
+Usage: 
+```
+fastlyctl logging bigquery ACTION [FLAGS]
+```
+
+Supported ACTIONs are `create`, `update`, `show`, `delete`, `list` 
+
+Flags:
+
+  * `--s / --service`  Service ID to use  (required) 
+  * `--v / --version`  Version of the service to use 
+  * `--n / --name`     Current name of the logging configuration
+  * `--nn / --new-name`  Used for the update method to rename a configuration
+  * `--ff / --format-file`  Path to the file containing the JSON Representation of the logline, must match BigQuery schema
+  * `--u / --user`     Google Cloud Service Account Email
+  * `--scf / --secret-key-file` Path to the file that contains the Google Cloud Account secret key
+  * `--p / --project-id` Google Cloud Project ID
+  * `--d / --dataset` Google BigQuery dataset 
+  * `--t / --table` Google BigQuery table
+  * `--ts / --template-suffix` Google table name suffix 
+  * `--pl / --placement` Placement of the logging  call, can be none or waf_debug.  Not required and no default
+  * `--r / --response-condition` When to execute, if empty it is always
+
+
+To print the full list of the options required type the command:
+
+```
+fastlyctl logging bigquery --help
+```
+
 
 ### login
 
