@@ -204,8 +204,10 @@ Flags:
 Manage the realtime logging configuration for a service, as well as checking on the status of the logging endpoints.  Logging requires a subcommand of either `status` or the name of a logging provider listed below.
 
 ##### status
-Usage:
 
+Status returns the current status of your logging configurations in JSON format.  Helps in telling you whether or not the logging is working or returning an error.
+
+Usage:
 ```
 fastlyctl logging status
 ```
