@@ -1,12 +1,14 @@
 # FastlyCTL [![Gem Version](https://img.shields.io/gem/v/fastlyctl.svg)](https://rubygems.org/gems/fastlyctl)
 
-CLI for manipulating objects with [Fastly's API](https://docs.fastly.com/api/config).
+A CLI for managing Fastly configurations with [Fastly's API](https://docs.fastly.com/api/config).
 
 ## Dependencies
 
  * Ruby 2.2+
- * diff
- * Bundler 
+ * [diffy](https://rubygems.org/gems/diffy)
+ * [launchy](https://rubygems.org/gems/launchy)
+ * [thor](https://rubygems.org/gems/thor)
+ * [typhoeus](https://rubygems.org/gems/typhoeus)
 
 ## Installation
 
