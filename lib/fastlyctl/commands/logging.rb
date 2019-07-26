@@ -4,6 +4,12 @@ module FastlyCTL
     class LoggingSubCmd < Thor 
       namespace :logging
 
+      # bit of a monkey patch to fix --help output
+      def self.banner(command, namespace = nil, subcommand = false)
+        "#{basename} logging #{command.usage}"
+      end
+
+
       desc "bigquery <action>", "Setup BigQuery As a logging provider, available actions are create, update, delete, list and show"
       method_option :service, :aliases => ["--s","--service"], :banner => "Service ID to use", :required => true 
       method_option :version, :aliases => ["--v", "--version"], :banner => "Version of the service to use"
