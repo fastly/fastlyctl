@@ -319,6 +319,7 @@ Flags:
   * --v: The version to use. Latest writable version is assumed.
   * --t: The type of snippet to create. Types are named after subroutines--for instance a snippet for `vcl_recv` would be of type `recv`. Use `init` for snippets outside of a subroutine.
   * --d: When used with the create command, specifies that the snippet should be dynamic.
+  * --y: Answer yes to all prompts
 
 ### token
 

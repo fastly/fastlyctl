@@ -5,6 +5,7 @@ module FastlyCTL
     method_option :version, :aliases => ["--v"]
     method_option :type, :aliases => ["--t"]
     method_option :dynamic, :aliases => ["--d"]
+    method_option :yes, :aliases => ["--y"]
     def snippet(action,name=false)
       id = FastlyCTL::Utils.parse_directory unless options[:service]
       id ||= options[:service]
@@ -46,9 +47,10 @@ module FastlyCTL
 
         new_content = File.read(filename)
 
-        say(FastlyCTL::Utils.get_diff(snippet["content"],new_content))
-
-        abort unless yes?("Given the above diff between the old dyanmic snippet content and the new content, are you sure you want to upload your changes? REMEMBER, THIS SNIPPET IS VERSIONLESS AND YOUR CHANGES WILL BE LIVE IMMEDIATELY!")
+        unless options.key?(:yes)
+          say(FastlyCTL::Utils.get_diff(snippet["content"],new_content))
+          abort unless yes?("Given the above diff between the old dyanmic snippet content and the new content, are you sure you want to upload your changes? REMEMBER, THIS SNIPPET IS VERSIONLESS AND YOUR CHANGES WILL BE LIVE IMMEDIATELY!")
+        end
 
         FastlyCTL::Fetcher.api_request(:put, "/service/#{id}/snippet/#{snippet["snippet_id"]}", {:endpoint => :api, body: {
             content: new_content
@@ -77,7 +79,7 @@ module FastlyCTL
           return
         end
 
-        if yes?("Local file #{filename} found. Would you like to upload its content?")
+        if options.key?(:yes) || yes?("Local file #{filename} found. Would you like to upload its content?")
           FastlyCTL::Fetcher.upload_snippet(id,version,File.read(filename),name)
           say("Local snippet file content successfully uploaded.")
         end
@@ -89,7 +91,7 @@ module FastlyCTL
 
         return unless File.exists?(filename)
 
-        if yes?("Would you like to delete the local file #{name}.snippet associated with this snippet?")
+        if options.key?(:yes) || yes?("Would you like to delete the local file #{name}.snippet associated with this snippet?")
           File.delete(filename)
           say("Local snippet file #{filename} deleted.")
         end
