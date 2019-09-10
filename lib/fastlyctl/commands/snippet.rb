@@ -21,7 +21,6 @@ module FastlyCTL
       encoded_name = URI.escape(name) if name
 
       filename = options.key?(:filename) ? options[:filename] : "#{name}.snippet"
-      puts "Filename: " + filename
 
       case action
       when "upload"
