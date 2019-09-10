@@ -36,6 +36,8 @@ module FastlyCTL
 
       url = "#{options[:endpoint] == :api ? FastlyCTL::FASTLY_API : FastlyCTL::FASTLY_APP}#{path}"
 
+      puts "URL: #{url}"
+      puts "Params: #{options[:body]}"
       response = Typhoeus::Request.new(
         url,
         method: method,
