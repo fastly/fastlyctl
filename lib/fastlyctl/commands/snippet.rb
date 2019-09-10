@@ -6,6 +6,9 @@ module FastlyCTL
     method_option :type, :aliases => ["--t"]
     method_option :dynamic, :aliases => ["--d"]
     method_option :yes, :aliases => ["--y"]
+    method_option :priority, :aliases => ["--p"]
+    method_option :filename, :aliases => ["--f"] 
+
     def snippet(action,name=false)
       id = FastlyCTL::Utils.parse_directory unless options[:service]
       id ||= options[:service]
@@ -17,7 +20,8 @@ module FastlyCTL
 
       encoded_name = URI.escape(name) if name
 
-      filename = "#{name}.snippet"
+      filename = options.key?(:filename) ? options[:filename] : "#{name}.snippet"
+      puts "Filename: " + filename
 
       case action
       when "upload"
@@ -46,6 +50,7 @@ module FastlyCTL
         snippet = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/snippet/#{snippet["id"]}")
 
         new_content = File.read(filename)
+        priority = options.key(:priority) ? options[:priority] : snippet[:priority]
 
         unless options.key?(:yes)
           say(FastlyCTL::Utils.get_diff(snippet["content"],new_content))
@@ -53,7 +58,8 @@ module FastlyCTL
         end
 
         FastlyCTL::Fetcher.api_request(:put, "/service/#{id}/snippet/#{snippet["snippet_id"]}", {:endpoint => :api, body: {
-            content: new_content
+            content: new_content,
+            priority: priority.to_s
           }
         })
 
@@ -68,7 +74,8 @@ module FastlyCTL
             name: name,
             type: options[:type] ? options[:type] : "recv",
             content: content,
-            dynamic: options.key?(:dynamic) ? 1 : 0
+            dynamic: options.key?(:dynamic) ? 1 : 0,
+            priority: options.key?(:priority) ? options[:priority].to_s : "100"
           }
         })
         say("#{name} created on #{id} version #{version}")
