@@ -90,6 +90,7 @@ module BigQuery
 
         params[:name] = options[:new_name] unless options[:new_name].nil? 
         params[:format] = parsed_format unless options[:format_file].nil?
+        params[:format_version] = options[:format_version] unless options[:format_version].nil?
         params[:user] = options[:user] unless options[:user].nil?
         params[:secret_key] = parsed_key  unless options[:secret_key_file].nil?
         params[:project_id] = options[:project_id] unless options[:project_id].nil?
