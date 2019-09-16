@@ -366,6 +366,10 @@ fastlyctl watch [pop]
 
 Flags:
   * --s: The service ID to watch. Current working directory is assumed.
+  
+## Debug Mode
+
+The `--debug` flag is available on any command. Using it will cause fastlyctl to print the libcurl for any requests it makes.
 
 ## Contributing
 
