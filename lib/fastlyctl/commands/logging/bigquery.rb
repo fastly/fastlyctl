@@ -59,11 +59,15 @@ module BigQuery
 
         params[:name] = options[:name] 
         params[:format] = parsed_format 
+        params[:format_version] = options[:format_version] unless options[:format_version].nil?
         params[:user] = options[:user]
         params[:secret_key] = parsed_key
         params[:project_id] = options[:project_id]
         params[:dataset] = options[:dataset]
         params[:table] = options[:table]
+        params[:template_suffix] = options[:template_suffix] unless options[:template_suffix].nil?
+        params[:placement] = options[:placement] unless options[:placement].nil?
+        params[:response_condition] = options[:response_condition] unless options[:response_condition].nil?
 
         FastlyCTL::Fetcher.api_request(:post, "/service/#{id}/version/#{version}/logging/bigquery", body: params)
         puts "BigQuery logging provider created in service id #{id} on version #{version}"
@@ -86,11 +90,15 @@ module BigQuery
 
         params[:name] = options[:new_name] unless options[:new_name].nil? 
         params[:format] = parsed_format unless options[:format_file].nil?
+        params[:format_version] = options[:format_version] unless options[:format_version].nil?
         params[:user] = options[:user] unless options[:user].nil?
         params[:secret_key] = parsed_key  unless options[:secret_key_file].nil?
         params[:project_id] = options[:project_id] unless options[:project_id].nil?
         params[:dataset] = options[:dataset] unless options[:dataset].nil?
         params[:table] = options[:table] unless options[:table].nil?
+        params[:template_suffix] = options[:template_suffix] unless options[:template_suffix].nil?
+        params[:placement] = options[:placement] unless options[:placement].nil?
+        params[:response_condition] = options[:response_condition] unless options[:response_condition].nil?
 
         FastlyCTL::Fetcher.api_request(:put, "/service/#{id}/version/#{version}/logging/bigquery/#{options[:name]}", body: params)
         puts "BigQuery logging provider update in service id #{id} on version #{version}"
