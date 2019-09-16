@@ -369,7 +369,7 @@ Flags:
   
 ## Debug Mode
 
-The `--debug` flag is available on any command. Using it will cause fastlyctl to print the libcurl for any requests it makes.
+The `--debug` flag is available on any command. Using it will cause fastlyctl to print the libcurl output for any requests it makes.
 
 ## Contributing
 
