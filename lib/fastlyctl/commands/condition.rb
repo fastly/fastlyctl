@@ -39,7 +39,6 @@ module FastlyCTL
             when "list"
 
                 conditions =  FastlyCTL::Fetcher.api_request(:get,"/service/#{id}/version/#{version}/condition")
-
                 CLI.print_conditions(conditions)
 
             when "create"
