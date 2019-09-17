@@ -65,7 +65,6 @@ module FastlyCTL
 
                 params = {}
                 params[:statement] = options[:statement] if options.key?(:statement)
-
                 params[:priority] = options[:priority] if options.key?(:priority)
                 params[:comment] = options[:comment] if options.key?(:comment) 
 
@@ -78,7 +77,6 @@ module FastlyCTL
                 abort "Must supply a condition name as second parameter" unless name
 
                 c =  FastlyCTL::Fetcher.api_request(:get,"/service/#{id}/version/#{version}/condition/#{encoded_name}")
-
                 CLI.print_conditions([c])
                 
             when "delete"
