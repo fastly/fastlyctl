@@ -16,6 +16,7 @@ require "fastlyctl/commands/snippet"
 require "fastlyctl/commands/acl"
 require "fastlyctl/commands/copy"
 require "fastlyctl/commands/logging"
+require "fastlyctl/commands/condition"
 
 
 module FastlyCTL
