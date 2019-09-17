@@ -8,7 +8,6 @@ module FastlyCTL
       method_option :priority, :aliases => ["--p"]
       method_option :statement, :aliases => ["--st"]
       method_option :comment, :aliases => ["--c"]
-      method_option :new_name, :aliases => ["--nn"]  #used to rename condition in update
   
       def self.print_condition_header
         puts
@@ -60,12 +59,14 @@ module FastlyCTL
             when "update"
                 abort "Must supply a condition name as second parameter" unless name
 
+                if options.key?(:type)
+                    puts "WARNING: Can not change the TYPE of a condition, you must delete and re-create, type parameter is ignored in update method.\n"
+                end
+
                 params = {}
-                params[:name] = options[:new_name] if options.key?(:new_name) 
                 params[:statement] = options[:statement] if options.key?(:statement)
 
                 params[:priority] = options[:priority] if options.key?(:priority)
-                params[:type] = options[:type] if options.key?(:type)
                 params[:comment] = options[:comment] if options.key?(:comment) 
 
                 FastlyCTL::Fetcher.api_request(:put,"/service/#{id}/version/#{version}/condition/#{encoded_name}",{
