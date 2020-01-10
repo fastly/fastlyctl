@@ -371,10 +371,6 @@ Flags:
 
 The `--debug` flag is available on any command. Using it will cause fastlyctl to print the libcurl output for any requests it makes.
 
-## Contributing
-
-Submit a pull request. Don't break anything.
-
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
