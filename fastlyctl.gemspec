@@ -34,4 +34,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "thor", "~> 0.19.4"
   spec.add_runtime_dependency 'diffy', '~> 3.2.1'
   spec.add_runtime_dependency 'launchy', '~> 2.4.3', '>= 2.4.3'
+  spec.add_runtime_dependency 'openssl', '~> 2.1.2', '>= 2.1.2'
 end

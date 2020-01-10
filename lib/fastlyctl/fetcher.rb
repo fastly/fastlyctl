@@ -7,8 +7,10 @@ module FastlyCTL
       options[:body] ||= nil
       options[:force_session] ||= false
       options[:expected_responses] ||= [200]
+      options[:use_vnd] ||= false
 
       headers = {"Accept" => "application/json", "Connection" => "close", "User-Agent" => "FastlyCTL: https://github.com/fastly/fastlyctl"}
+      headers["Accept"] = "application/vnd.api+json" if options[:use_vnd]
 
       if options[:endpoint] == :app
         headers["Referer"] = FastlyCTL::FASTLY_APP
@@ -54,29 +56,48 @@ module FastlyCTL
         end
       else
         case response.response_code
-          when 400
-            error = "400: Bad API request--got bad request response."
-          when 403
-            error = "403: Access Denied by API. Run login command to authenticate."
-          when 404
-            error = "404: Service does not exist or bad path requested."
-          when 503
-            error = "503: API is offline."
-          else
-            error = "API responded with status #{response.response_code}."
+        when 400
+          error = "400: Bad API request--something was wrong with the request made by FastlyCTL."
+        when 403
+          error = "403: Access Denied by API. Run login command to authenticate."
+        when 404
+          error = "404: Service does not exist or bad path requested."
+        when 503
+          error = "503: Error from Fastly API--see details below."
+        when 0
+          error = "0: Network connection error occurred."
+        else
+          error = "API responded with status #{response.response_code}."
         end
 
         error += " Method: #{method.to_s.upcase}, Path: #{path}\n"
-        error += "Message from API: #{response.response_body}"
+
+        if (options[:use_vnd]) 
+          begin
+            error_resp = JSON.parse(response.response_body)
+          rescue JSON::ParserError
+            error_resp = {"errors" => [{"title" => "Error parsing response JSON","details" => "No further information available. Please file a github issue at https://github.com/fastly/fastlyctl"}]}
+          end
+
+          error_resp["errors"].each do |e|
+            error += e["title"] + " --- " + e["detail"] + "\n"
+          end
+        else
+          error += "Message from API: #{response.response_body}"
+        end
 
         abort error
       end
 
-      return response.response_body if (response.headers["Content-Type"] != "application/json")
+      return response.response_body unless (response.headers["Content-Type"] =~ /json$/)
 
       if response.response_body.length > 1
         begin
-          return JSON.parse(response.response_body)
+          if (options[:use_vnd])
+            return JSON.parse(response.response_body)["data"]
+          else
+            return JSON.parse(response.response_body)
+          end
         rescue JSON::ParserError
           abort "Failed to parse JSON response from Fastly API"
         end

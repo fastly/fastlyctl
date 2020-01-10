@@ -6,6 +6,7 @@ require "uri"
 require "launchy"
 require "erb"
 require "pp"
+require "openssl"
 
 require "fastlyctl/version"
 require "fastlyctl/fetcher"

@@ -4,6 +4,10 @@ module FastlyCTL
       Launchy.open(FastlyCTL::FASTLY_APP + FastlyCTL::TANGO_PATH + id)
     end
 
+    def self.open_app_path(path)
+      Launchy.open(FastlyCTL::FASTLY_APP + path)
+    end
+
     def self.parse_directory(path=false)
       directory = Dir.pwd unless path
       directory = path if path
