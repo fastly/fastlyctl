@@ -16,7 +16,6 @@ module FastlyCTL
       "vcl" => {},
       "snippet" => {},
       "logging/s3" => {},
-      "logging/s3canary" => {},
       "logging/azureblob" => {},
       "logging/cloudfiles" => {},
       "logging/digitalocean" => {},
