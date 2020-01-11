@@ -33,7 +33,8 @@ module FastlyCTL
         # gbps
         uncacheable = agg["pass"] + agg["synth"] + agg["errors"]
         bw = ((agg["resp_header_bytes"] + agg["resp_body_bytes"]).to_f * 8.0) / 1000000000.0
-        hit_rate = (1.0 - ((agg["miss"] - agg["shield"]).to_f / ((agg["requests"] - uncacheable).to_f))) * 100.0
+        shield = agg["shield"] || 0
+        hit_rate = (1.0 - ((agg["miss"] - shield).to_f / ((agg["requests"] - uncacheable).to_f))) * 100.0
         passes = agg["pass"]
         miss_time = agg["miss"] > 0 ? ((agg["miss_time"] / agg["miss"]) * 1000).round(0) : 0
         synth = agg["synth"]
