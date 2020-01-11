@@ -161,7 +161,7 @@ module FastlyCTL
     end
 
     def self.upload_snippet(service,version,content,name)
-      return FastlyCTL::Fetcher.api_request(:put, "/service/#{service}/version/#{version}/snippet/#{name}", {:endpoint => :api, body: {
+      return FastlyCTL::Fetcher.api_request(:put, "/service/#{service}/version/#{version}/snippet/#{FastlyCTL::Utils.percent_encode(name)}", {:endpoint => :api, body: {
           content: content
         }
       })
@@ -178,7 +178,7 @@ module FastlyCTL
         end
       end
 
-      response = FastlyCTL::Fetcher.api_request(:put, "/service/#{service}/version/#{version}/vcl/#{name}", {:endpoint => :api, body: params, expected_responses: [200,404]})
+      response = FastlyCTL::Fetcher.api_request(:put, "/service/#{service}/version/#{version}/vcl/#{FastlyCTL::Utils.percent_encode(name)}", {:endpoint => :api, body: params, expected_responses: [200,404]})
 
       # The VCL got deleted so recreate it.
       if response["msg"] == "Record not found"

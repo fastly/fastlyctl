@@ -20,7 +20,7 @@ module FastlyCTL
       version = FastlyCTL::Fetcher.get_writable_version(id) unless options[:version]
       version ||= options[:version]
 
-      encoded_name = URI.escape(name) if name
+      encoded_name = FastlyCTL::Utils.percent_encode(name) if name
 
       case action
       when "create"
@@ -49,14 +49,14 @@ module FastlyCTL
         abort "Must specify name for dictionary" unless name
         abort "Must specify key and value for dictionary item" unless (key && value)
         dict = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/dictionary/#{encoded_name}")
-        FastlyCTL::Fetcher.api_request(:put, "/service/#{id}/dictionary/#{dict["id"]}/item/#{key}", params: { item_value: value })   
+        FastlyCTL::Fetcher.api_request(:put, "/service/#{id}/dictionary/#{dict["id"]}/item/#{FastlyCTL::Utils.percent_encode(key)}", params: { item_value: value })   
 
         say("Dictionary item #{key} set to #{value}.")   
       when "remove"
         abort "Must specify name for dictionary" unless name
         abort "Must specify key for dictionary item" unless key
         dict = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/dictionary/#{encoded_name}")
-        FastlyCTL::Fetcher.api_request(:delete, "/service/#{id}/dictionary/#{dict["id"]}/item/#{key}")
+        FastlyCTL::Fetcher.api_request(:delete, "/service/#{id}/dictionary/#{dict["id"]}/item/#{FastlyCTL::Utils.percent_encode(key)}")
 
         say("Item #{key} removed from dictionary #{name}.")
       when "list_items"

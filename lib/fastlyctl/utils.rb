@@ -68,5 +68,10 @@ module FastlyCTL
 
       return diff
     end
+
+    def self.percent_encode(string)
+      # CGI.escape replace whitespace to "+" which is "%20" in a percent-encoding manner
+      CGI.escape(string).gsub('+', '%20')
+    end
   end
 end
