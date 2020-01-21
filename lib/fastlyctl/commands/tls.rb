@@ -1,6 +1,13 @@
 require "fastlyctl/commands/tls/managed"
 
 module FastlyCTL
+  class TLSSubCmd < SubCommandBase
+    SubcommandPrefix = "tls"
+
+    desc "managed SUBCOMMAND ...ARGS", "Interface with Fastly Managed TLS Subscriptions (lets-encrypt)"
+    subcommand "managed", TLSManagedSubCmd
+  end
+
   class CLI < Thor
     desc "tls SUBCOMMAND ...ARGS", "Interface with Fastly TLS"
     subcommand "tls", TLSSubCmd

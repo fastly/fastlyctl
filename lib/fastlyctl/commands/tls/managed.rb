@@ -116,10 +116,4 @@ module FastlyCTL
       say("No TLS Subscription found for #{domain}...")
     end
   end
-
-  class TLSSubCmd < SubCommandBase
-    SubcommandPrefix = "tls"
-    desc "managed SUBCOMMAND ...ARGS", "Interface with Fastly Managed TLS Subscriptions (lets-encrypt)"
-    subcommand "managed", TLSManagedSubCmd
-  end
 end
