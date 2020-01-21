@@ -76,6 +76,16 @@ module FastlyCTL
     def self.percent_encode(string)
       # CGI.escape replace whitespace to "+" which is "%20" in a percent-encoding manner
       CGI.escape(string).gsub('+', '%20')
+
+    def self.filter_vnd(haystack,needle)
+      results = []
+      haystack.each do |i|
+        next unless i["type"] == needle
+
+        results.push(i)
+      end
+
+      return results
     end
   end
 end

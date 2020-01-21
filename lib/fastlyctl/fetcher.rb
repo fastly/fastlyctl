@@ -10,7 +10,6 @@ module FastlyCTL
       options[:use_vnd] ||= false
 
       headers = {"Accept" => "application/json", "Connection" => "close", "User-Agent" => "FastlyCTL: https://github.com/fastly/fastlyctl"}
-      headers["Accept"] = "application/vnd.api+json" if options[:use_vnd]
 
       if options[:endpoint] == :app
         headers["Referer"] = FastlyCTL::FASTLY_APP
@@ -28,6 +27,15 @@ module FastlyCTL
       end
 
       headers["Content-Type"] = "application/x-www-form-urlencoded" if (method == :post || method == :put)
+
+      if options[:use_vnd]
+        headers["Accept"] = "application/vnd.api+json"
+
+        if (method == :post || method == :put)
+          headers["Content-Type"] = "application/vnd.api+json"
+        end
+        options[:expected_responses].push(*[201,202,203,204])
+      end
 
       headers.merge!(options[:headers]) if options[:headers].count > 0
 
@@ -80,6 +88,7 @@ module FastlyCTL
           end
 
           error_resp["errors"].each do |e|
+            next unless e.key?("title") && e.key?("detail")
             error += e["title"] + " --- " + e["detail"] + "\n"
           end
         else
@@ -93,11 +102,7 @@ module FastlyCTL
 
       if response.response_body.length > 1
         begin
-          if (options[:use_vnd])
-            return JSON.parse(response.response_body)["data"]
-          else
-            return JSON.parse(response.response_body)
-          end
+          return JSON.parse(response.response_body)
         rescue JSON::ParserError
           abort "Failed to parse JSON response from Fastly API"
         end
