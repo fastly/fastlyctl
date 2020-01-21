@@ -334,7 +334,7 @@ fastlyctl tls managed [subcommand] [domain]
 Available Subcommands:
   * create: Create a Managed TLS Subscription for `[domain]`
   * status: Print the status of all Managed TLS Subscriptions
-  * challenges: Print the challenges needed for the verification of a certificate for `[domain]`
+  * challenges: Print the challenges available for the verification of a certificate for `[domain]`
   * delete: Delete a Managed TLS Subscription for `[domain]`
 
 ### token
