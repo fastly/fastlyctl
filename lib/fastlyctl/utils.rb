@@ -4,6 +4,10 @@ module FastlyCTL
       Launchy.open(FastlyCTL::FASTLY_APP + FastlyCTL::TANGO_PATH + id)
     end
 
+    def self.open_app_path(path)
+      Launchy.open(FastlyCTL::FASTLY_APP + path)
+    end
+
     def self.parse_directory(path=false)
       directory = Dir.pwd unless path
       directory = path if path
@@ -72,6 +76,17 @@ module FastlyCTL
     def self.percent_encode(string)
       # CGI.escape replace whitespace to "+" which is "%20" in a percent-encoding manner
       CGI.escape(string).gsub('+', '%20')
+    end
+
+    def self.filter_vnd(haystack,needle)
+      results = []
+      haystack.each do |i|
+        next unless i["type"] == needle
+
+        results.push(i)
+      end
+
+      return results
     end
   end
 end

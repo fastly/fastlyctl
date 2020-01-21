@@ -6,11 +6,13 @@ require "uri"
 require "launchy"
 require "erb"
 require "pp"
+require "openssl"
 
 require "fastlyctl/version"
 require "fastlyctl/fetcher"
 require "fastlyctl/clone_utils"
 require "fastlyctl/utils"
+require "fastlyctl/subcommand_patch"
 require "fastlyctl/cli"
 
 include ERB::Util

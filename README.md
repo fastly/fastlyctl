@@ -321,6 +321,22 @@ Flags:
   * --d: When used with the create command, specifies that the snippet should be dynamic.
   * --y: Answer yes to all prompts
 
+### tls
+
+#### managed
+
+Usage:
+
+```
+fastlyctl tls managed [subcommand] [domain]
+```
+
+Available Subcommands:
+  * create: Create a Managed TLS Subscription for `[domain]`
+  * status: Print the status of all Managed TLS Subscriptions
+  * challenges: Print the challenges available for the verification of a certificate for `[domain]`
+  * delete: Delete a Managed TLS Subscription for `[domain]`
+
 ### token
 
 Manipulate tokens for an account.
