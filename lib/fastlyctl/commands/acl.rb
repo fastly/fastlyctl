@@ -20,7 +20,7 @@ module FastlyCTL
       version = FastlyCTL::Fetcher.get_writable_version(id) unless options[:version]
       version ||= options[:version]
 
-      encoded_name = URI.escape(name) if name
+      encoded_name = FastlyCTL::Utils.percent_encode(name) if name
 
       case action
       when "create"

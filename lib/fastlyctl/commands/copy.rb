@@ -19,7 +19,7 @@ module FastlyCTL
       path += "/#{obj_name}" unless obj_type == "settings"
       obj = FastlyCTL::Fetcher.api_request(:get, path)
 
-      encoded_name = URI.escape(obj_name)
+      encoded_name = FastlyCTL::Utils.percent_encode(obj_name)
 
       if (obj_type == "settings")
         puts "Copying settings from #{id} version #{source_version} to #{target_id} version #{target_version}..."
