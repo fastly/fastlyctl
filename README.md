@@ -328,14 +328,26 @@ Flags:
 Usage:
 
 ```
-fastlyctl tls managed [subcommand] [domain]
+fastlyctl tls managed [subcommand]
 ```
 
 Available Subcommands:
-  * create: Create a Managed TLS Subscription for `[domain]`
+  * create `[domain]`: Create a Managed TLS Subscription for `[domain]`
   * status: Print the status of all Managed TLS Subscriptions
-  * challenges: Print the challenges available for the verification of a certificate for `[domain]`
-  * delete: Delete a Managed TLS Subscription for `[domain]`
+  * challenges `[domain]`: Print the challenges available for the verification of a certificate for `[domain]`
+  * delete `[domain]`: Delete a Managed TLS Subscription for `[domain]`
+
+#### privatekey
+
+Usage:
+
+```
+fastlyctl tls privatekey [subcommand]
+```
+
+Available Subcommands:
+  * upload `[key_name]` `[path_to_key]`: Upload to Fastly a private key which you will use to sign your certificates
+  * list: Print the status of all private keys
 
 ### token
 
