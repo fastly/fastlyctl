@@ -25,7 +25,7 @@ module FastlyCTL
     class_option :debug, :desc => 'Enabled debug mode output'
 
     def initialize(a,b,c)
-      unless File.exist?(FastlyCTL::TOKEN_FILE)
+      unless File.exist?(FastlyCTL::TOKEN_FILE) || ENV['FASTLY_TOKEN']
         if yes?("Unable to locate API token. Would you like to login first?")
           self.login
         end
