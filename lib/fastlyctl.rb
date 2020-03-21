@@ -26,5 +26,5 @@ module FastlyCTL
 
   Cookies = File.exist?(FastlyCTL::COOKIE_JAR) ? JSON.parse(File.read(FastlyCTL::COOKIE_JAR)) : {}
   # Don't allow header splitting with the key
-  Token = File.exist?(FastlyCTL::TOKEN_FILE) ? File.read(FastlyCTL::TOKEN_FILE) : (ENV['FASTLY_TOKEN'] ? ENV['FASTLY_TOKEN'] : false)
+  Token = File.exist?(FastlyCTL::TOKEN_FILE) ? File.read(FastlyCTL::TOKEN_FILE) : (ENV['FASTLYCLI_TOKEN'] ? ENV['FASTLYCLI_TOKEN'] : false)
 end
