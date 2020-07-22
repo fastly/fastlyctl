@@ -36,7 +36,7 @@ module FastlyCTL
 
         options[:services].split(",").each do |v|
           o["services[]"] = v
-        end
+        end if options[:services]
         o[:customer] = options[:customer] if options[:customer]
 
         resp = FastlyCTL::Fetcher.create_token(o)
