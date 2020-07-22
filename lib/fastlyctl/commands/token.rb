@@ -20,25 +20,27 @@ module FastlyCTL
         scope = options[:scope]
         scope ||= "global"
 
-        say("You must login again to create tokens.")
+        say("You must authenticate again to create tokens.")
 
-        login_results = FastlyCTL::Fetcher.login
+        username = ask("Username: ")
+        password = ask("Password: ", :echo => false)
+        say("")
 
-        name = ask("What would you like to name your token?")
-
+        name = ask("What would you like to name your token? (enter here):")
         o = {
-          user: login_results[:user],
-          pass: login_results[:pass],
-          code: login_results[:code],
+          username: username,
+          password: password,
           scope: scope,
-          name: name
-        }
+          name: name || "fastlyctl_token"
+        }.compare_by_identity
 
-        o[:services] = options[:services].split(",") if options[:services]
-
+        options[:services].split(",").each do |v|
+          o["services[]"] = v
+        end
         o[:customer] = options[:customer] if options[:customer]
 
         resp = FastlyCTL::Fetcher.create_token(o)
+        say("token: #{resp["access_token"]}")
 
       when "delete"
         id = ask("What is the ID of the token you'd like to delete?")

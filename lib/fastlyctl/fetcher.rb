@@ -5,7 +5,7 @@ module FastlyCTL
       options[:params] ||= {}
       options[:headers] ||= {}
       options[:body] ||= nil
-      options[:force_session] ||= false
+      options[:disable_token] ||= false
       options[:expected_responses] ||= [200]
       options[:use_vnd] ||= false
 
@@ -13,17 +13,11 @@ module FastlyCTL
 
       if options[:endpoint] == :app
         headers["Referer"] = FastlyCTL::FASTLY_APP
-        headers["X-CSRF-Token"] = FastlyCTL::Cookies["fastly.csrf"] if FastlyCTL::Cookies["fastly.csrf"]
         headers["Fastly-API-Request"] = "true"
       end
 
-      if FastlyCTL::Token && !options[:force_session]
+      if FastlyCTL::Token && !options[:disable_token]
         headers["Fastly-Key"] = FastlyCTL::Token
-      else
-        headers["Cookie"] = "" if FastlyCTL::Cookies.length > 0
-        FastlyCTL::Cookies.each do |k,v|
-          headers["Cookie"] << "#{k}=#{v};"
-        end
       end
 
       headers["Content-Type"] = "application/x-www-form-urlencoded" if (method == :post || method == :put)
@@ -54,15 +48,7 @@ module FastlyCTL
         body: options[:body]
       ).run
 
-      if options[:expected_responses].include?(response.response_code)
-        if response.headers["Set-Cookie"]
-          response.headers["Set-Cookie"] = [response.headers["Set-Cookie"]] if response.headers["Set-Cookie"].is_a? String
-          response.headers["Set-Cookie"].each do |c|
-            name, value = c.match(/^([^=]*)=([^;]*).*/i).captures
-            FastlyCTL::Cookies[name] = value
-          end
-        end
-      else
+      if !options[:expected_responses].include?(response.response_code)
         case response.response_code
         when 400
           error = "400: Bad API request--something was wrong with the request made by FastlyCTL."
@@ -212,61 +198,33 @@ module FastlyCTL
       end
     end
 
-    def self.login
-      thor = Thor::Shell::Basic.new
-
-      user = thor.ask("Username: ")
-      pass = thor.ask("Password: ", :echo => false)
-
-      resp = FastlyCTL::Fetcher.api_request(:post, "/login", { :endpoint => :app, params: { user: user, password: pass}})
-
-      if resp["needs_two_factor_auth"]
-        two_factor = true
-
-        thor.say("\nTwo factor auth enabled on account, second factor needed.")
-        code = thor.ask('Please enter verification code:', echo: false)
-
-        resp = FastlyCTL::Fetcher.api_request(:post, "/two_factor_auth/verify", {force_session: true, :endpoint => :app, params: { token: code }} )
-      else
-        thor.say("\nTwo factor auth is NOT enabled. You should go do that immediately.")
-      end
-
-      thor.say("Login successful!")
-
-      return { user: user, pass: pass, two_factor: two_factor, code: code }
-    end
-
     def self.create_token(options)
       thor = Thor::Shell::Basic.new
 
       headers = {}
-      headers["Fastly-OTP"] = options[:code] if options[:code]
-
-      FastlyCTL::Fetcher.api_request(:post, "/sudo", {
-        force_session: true,
-        endpoint: :api,
-        params: {
-          user: options[:user],
-          password: options[:pass]
-        },
-        headers: headers
-      })
-
-      params = {
-          name: options[:name],
-          scope: options[:scope],
-          user: options[:user],
-          password: options[:pass]
-      }
-
-      params[:services] = options[:services] if options[:services]
-
       resp = FastlyCTL::Fetcher.api_request(:post, "/tokens", {
-        force_session: true,
+        disable_token: true,
         endpoint: :api,
-        params: params,
-        headers: headers
+        body: options,
+        headers: headers,
+        expected_responses: [200,400]
       })
+
+      if resp.has_key?("msg") && resp["msg"] == "2fa.verify"
+        thor.say("\nTwo factor auth enabled on account, second factor needed.")
+        code = thor.ask('Please enter verification code:', echo: false)
+
+        headers = {}
+        headers["Fastly-OTP"] = code
+        resp = FastlyCTL::Fetcher.api_request(:post, "/tokens", {
+          disable_token: true,
+          endpoint: :api,
+          body: options,
+          headers: headers
+        })
+      elsif resp.has_key?("msg")
+        abort "ERROR: #{resp}"
+      end
 
       thor.say("\n#{resp["id"]} created.")
 
