@@ -13,7 +13,7 @@ module FastlyCTL
       pop = pop.upcase if pop
 
       while true
-        data = FastlyCTL::Fetcher.api_request(:get,"/rt/v1/channel/#{service}/ts/#{ts ? ts : 'h/limit/120'}", :endpoint => :app)
+        data = FastlyCTL::Fetcher.api_request(:get,"/rt/v1/channel/#{service}/ts/#{ts ? ts : 'h/limit/120'}", :endpoint => :rt)
         
         unless data["Data"].length > 0
           say("No data to display!")

@@ -38,7 +38,7 @@ module FastlyCTL
         headers[k] = v.gsub(/\r|\n/,'')
       end
 
-      url = "#{options[:endpoint] == :api ? FastlyCTL::FASTLY_API : FastlyCTL::FASTLY_APP}#{path}"
+      url = "#{options[:endpoint] == :api ? FastlyCTL::FASTLY_API : FastlyCTL::FASTLY_RT_API}#{path}"
 
       response = Typhoeus::Request.new(
         url,
