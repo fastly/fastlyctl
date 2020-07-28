@@ -18,13 +18,11 @@ require "fastlyctl/cli"
 include ERB::Util
 
 module FastlyCTL
-  COOKIE_JAR = ENV['HOME'] + "/.fastlyctl_cookie_jar"
   TOKEN_FILE = ENV['HOME'] + "/.fastlyctl_token"
   FASTLY_API = "https://api.fastly.com"
-  FASTLY_APP = "https://manage.fastly.com"
+  FASTLY_RT_API = "https://rt.fastly.com"
   TANGO_PATH = "/configure/services/"
 
-  Cookies = File.exist?(FastlyCTL::COOKIE_JAR) ? JSON.parse(File.read(FastlyCTL::COOKIE_JAR)) : {}
   # Don't allow header splitting with the key
   Token = File.exist?(FastlyCTL::TOKEN_FILE) ? File.read(FastlyCTL::TOKEN_FILE) : (ENV['FASTLYCLI_TOKEN'] ? ENV['FASTLYCLI_TOKEN'] : false)
 end

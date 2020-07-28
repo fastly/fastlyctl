@@ -13,23 +13,21 @@ module FastlyCTL
 
       say("Proceeding with username/password login...")
 
-      login_results = FastlyCTL::Fetcher.login
+      username = ask("Username: ")
+      password = ask("Password: ", :echo => false)
+      say("")
 
-      File.open(FastlyCTL::COOKIE_JAR , 'w+') {|f| f.write(JSON.dump(FastlyCTL::Cookies)) }
-      File.chmod(0600, FastlyCTL::COOKIE_JAR)
-
-      say("Creating root scoped token...")
-
-      if login_results[:user].include?("@fastly.com") && !login_results[:user].include?("+")
+      if username.include?("@fastly.com") && !username.include?("+")
         scope = "root"
       else
         scope = "global"
       end
 
+      say("Creating #{scope} scope token...")
+
       o = {
-        user: login_results[:user],
-        pass: login_results[:pass],
-        code: login_results[:code],
+        username: username,
+        password: password,
         scope: scope,
         name: "fastlyctl_token"
       }
