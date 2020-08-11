@@ -52,6 +52,10 @@ module FastlyCTL
         obj.merge!(FastlyCTL::Fetcher.api_request(:get, "/service/#{source_sid}/snippet/#{obj["id"]}"))
       end
 
+      if type.start_with?("logging/") && obj["response_condition"] == ""
+        obj.delete("response_condition")
+      end
+
       obj_id = obj["id"]
       obj = FastlyCTL::CloneUtils.filter(type,obj)
 
