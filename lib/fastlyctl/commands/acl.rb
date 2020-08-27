@@ -1,6 +1,8 @@
 module FastlyCTL
   class CLI < Thor
-    desc "acl ACTION ACL_NAME IP", "Manipulate ACLS.\n  Actions:\n    create: Create an ACL\n
+    desc "acl ACTION ACL_NAME IP", "Manipulate ACLS.\n  
+    Actions:\n    
+    create: Create an ACL\n
     delete: Delete an ACL\n
     list: Provide a list of ACLs on this service\n
     add: Add an IP/subnet to an ACL\n
@@ -16,8 +18,11 @@ module FastlyCTL
       id ||= options[:service]
 
       abort "Could not parse service id from directory. Specify service id with --service or use from within service directory." unless id
+      
+      readonly = ["list", "list_ips"]
 
-      version = FastlyCTL::Fetcher.get_writable_version(id) unless options[:version]
+      version = FastlyCTL::Fetcher.get_service_version(id, readonly.include?(action)) unless options[:version]
+      
       version ||= options[:version]
 
       encoded_name = FastlyCTL::Utils.percent_encode(name) if name

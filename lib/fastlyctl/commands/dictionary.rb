@@ -17,7 +17,9 @@ module FastlyCTL
 
       abort "Could not parse service id from directory. Specify service id with --service or use from within service directory." unless id
 
-      version = FastlyCTL::Fetcher.get_writable_version(id) unless options[:version]
+      readonly = ["list", "list_items"]
+
+      version = FastlyCTL::Fetcher.get_service_version(id, readonly.include?(action)) unless options[:version]
       version ||= options[:version]
 
       encoded_name = FastlyCTL::Utils.percent_encode(name) if name

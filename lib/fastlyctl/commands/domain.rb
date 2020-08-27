@@ -9,7 +9,9 @@ module FastlyCTL
 
       abort "Could not parse service id from directory. Use --s <service> to specify, vcl download, then try again." unless id
 
-      version = FastlyCTL::Fetcher.get_writable_version(id) unless options[:version]
+      readonly = ["list", "check"]
+
+      version = FastlyCTL::Fetcher.get_service_version(id, readonly.include?(action)) unless options[:version]
       version ||= options[:version].to_i
 
       case action
