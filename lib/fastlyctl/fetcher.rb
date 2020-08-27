@@ -147,6 +147,14 @@ module FastlyCTL
 
       return version
     end
+    
+    def self.get_service_version(id, readonly=false)
+      if readonly
+        return self.get_active_version(id)
+      end
+      
+      return self.get_writable_version(id)
+    end
 
     def self.get_vcl(id, version, generated=false)
       if generated
