@@ -106,7 +106,7 @@ module BigQuery
 
     def self.list(options)
         id = options[:service]
-        version = FastlyCTL::Fetcher.get_writable_version(id) unless options[:version]
+        version = FastlyCTL::Fetcher.get_active_version(id) unless options[:version]
         version ||= options[:version]
 
         puts "Listing all BigQuery configurations for service #{id} version #{version}"
@@ -119,7 +119,7 @@ module BigQuery
         required_opts = ["name"]
         ensure_opts(required_opts,options)
         id  = options[:service]
-        version = FastlyCTL::Fetcher.get_writable_version(id) unless options[:version]
+        version = FastlyCTL::Fetcher.get_active_version(id) unless options[:version]
         version ||= options[:version]
 
         resp = FastlyCTL::Fetcher.api_request(:get, "/service/#{id}/version/#{version}/logging/bigquery/#{options[:name]}")
