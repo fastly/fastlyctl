@@ -1,4 +1,5 @@
 require "fastlyctl/commands/tls/managed"
+require "fastlyctl/commands/tls/private_key"
 
 module FastlyCTL
   class TLSSubCmd < SubCommandBase
@@ -6,6 +7,9 @@ module FastlyCTL
 
     desc "managed SUBCOMMAND ...ARGS", "Interface with Fastly Managed TLS Subscriptions (lets-encrypt)"
     subcommand "managed", TLSManagedSubCmd
+
+    desc "privatekey SUBCOMMAND ...ARGS", "Manipulate private keys"
+    subcommand "privatekey", TLSPrivateKeySubCmd
   end
 
   class CLI < Thor
