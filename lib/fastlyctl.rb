@@ -20,6 +20,7 @@ include ERB::Util
 module FastlyCTL
   TOKEN_FILE = ENV['HOME'] + "/.fastlyctl_token"
   FASTLY_API = "https://api.fastly.com"
+  FASTLY_APP = "https://manage.fastly.com"
   FASTLY_RT_API = "https://rt.fastly.com"
   TANGO_PATH = "/configure/services/"
 
