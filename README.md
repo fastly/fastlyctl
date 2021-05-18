@@ -1,5 +1,9 @@
 # FastlyCTL [![Gem Version](https://img.shields.io/gem/v/fastlyctl.svg)](https://rubygems.org/gems/fastlyctl)
 
+**DEPRECATED**: Please use [`fastly/cli`](https://github.com/fastly/cli) instead.
+
+---
+
 A CLI for managing Fastly configurations with [Fastly's API](https://docs.fastly.com/api/config).
 
 ## Dependencies
