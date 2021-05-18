@@ -395,3 +395,11 @@ The `--debug` flag is available on any command. Using it will cause fastlyctl to
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
 
+## Publishing
+
+Bump version in `/lib/fastlyctl/version.rb`.
+
+```bash
+$ gem build fastlyctl.gemspec
+$ gem push fastlyctl-1.0.X.gem
+```
