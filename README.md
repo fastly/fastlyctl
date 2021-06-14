@@ -1,5 +1,9 @@
 # FastlyCTL [![Gem Version](https://img.shields.io/gem/v/fastlyctl.svg)](https://rubygems.org/gems/fastlyctl)
 
+**DEPRECATED**: FastlyCTL is no longer maintained or supported.  Many features are already available in the official [Fastly CLI](https://github.com/fastly/cli), which is actively maintained and developed.  Please consider migrating if possible.
+
+---
+
 A CLI for managing Fastly configurations with [Fastly's API](https://docs.fastly.com/api/config).
 
 ## Dependencies
@@ -391,3 +395,11 @@ The `--debug` flag is available on any command. Using it will cause fastlyctl to
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
 
+## Publishing
+
+Bump version in `/lib/fastlyctl/version.rb`.
+
+```bash
+$ gem build fastlyctl.gemspec
+$ gem push fastlyctl-1.0.X.gem
+```

@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["stephen@fastly.com"]
 
   spec.summary       = %q{CLI tool for interacting with the Fastly API}
-  spec.description   = %q{This gem provides a CLI for managing Fastly configurations}
+  spec.description   = %q{DEPRECATED: FastlyCTL is no longer maintained or supported.  Many features are already available in the official Fastly CLI (https://github.com/fastly/cli), which is actively maintained and developed.  Please consider migrating if possible.}
   spec.homepage      = "http://www.github.com/fastly/fastlyctl"
   spec.license       = "MIT"
 
