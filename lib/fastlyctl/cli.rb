@@ -25,7 +25,7 @@ module FastlyCTL
     class_option :debug, :desc => 'Enabled debug mode output'
 
     def initialize(a,b,c)
-      warn "DEPRECATED: Please use https://github.com/fastly/cli instead."
+      warn "DEPRECATED: FastlyCTL is no longer maintained or supported.  Many features are already available in the official Fastly CLI (https://github.com/fastly/cli), which is actively maintained and developed.  Please consider migrating if possible."
 
       unless File.exist?(FastlyCTL::TOKEN_FILE) || ENV['FASTLYCLI_TOKEN']
         if yes?("Unable to locate API token. Would you like to login first?")
